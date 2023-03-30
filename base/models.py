@@ -125,7 +125,7 @@ class Student(models.Model):
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20, null=False)
     joinned_year = models.DateField(default=timezone.now)
-    role_no = models.IntegerField()
+    role_no = models.IntegerField(unique=True)
     department = models.CharField(max_length=40)
 
     @property
@@ -244,6 +244,18 @@ class Ebook(models.Model):
 class EbookForClass(models.Model):
     id = models.IntegerField(primary_key=True)
     cover_image = models.CharField(max_length=100)
+    Class_id = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
+    subject = models.CharField(max_length=50)
+    course = models.ForeignKey(NoteCourse, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='ebooks')
+
+    def __str__(self):
+        return self.title
+
+
+class URLForClass(models.Model):
+    id = models.IntegerField(primary_key=True)
     Class_id = models.CharField(max_length=50)
     title = models.CharField(max_length=100)
     subject = models.CharField(max_length=50)
