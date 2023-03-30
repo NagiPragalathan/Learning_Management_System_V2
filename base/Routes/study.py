@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ..models import Faculty_details, Users, Room, ClassRooms, class_enrolled, Attendees, Student, Teacher, EbookForClass
+from ..models import Faculty_details, Users, Room, ClassRooms, class_enrolled, Attendees, Student, Teacher, EbookForClass, daily_test
 from django.contrib.auth.models import User
 from .Tool.Tools import get_user_mail, get_user_name, get_user_role, get_user_obj
 import datetime
 from .Tool.Code_scriping_Tool import get_image_url
 from .Forms.Notes_form import EbookClassForm
 from base import models as TMODEL
+from django.utils import timezone
 
 
 def is_teacher(user):
@@ -105,11 +106,11 @@ def nave_home_classroom(request, pk, class_id):
                 user_id=request.user.id, status=True)
             if accountapproval:
                 if Room.objects.filter(name=class_id).exists():
-                    return render(request, 'class_room/student_class_room.html', {'people': peoples, "detail": detials, 'books': books})
+                    return render(request, 'class_room/staff_class_room.html', {'people': peoples, "detail": detials, 'books': books})
                 else:
                     new_room = Room.objects.create(name=class_id)
                     new_room.save()
-                    return render(request, 'class_room/student_class_room.html', {'people': peoples, "detail": detials, 'books': books})
+                    return render(request, 'class_room/staff_class_room.html', {'people': peoples, "detail": detials, 'books': books})
             else:
                 return render(request, 'teacher/teacher_wait_for_approval.html')
         else:
@@ -198,11 +199,35 @@ def save_add_class(request):
     return render(request, 'class_room/new_add.html')
 
 
+def edit_classroom(request, classroom_id):
+    # Retrieve the classroom object from the database
+    classroom = get_object_or_404(ClassRooms, subject_code=classroom_id)
+
+    if request.method == 'POST':
+        # Retrieve the updated data from the HTML form
+        classroom.class_name = request.POST.get('class_name')
+        classroom.subject_code = request.POST.get('subject_code')
+        classroom.semester = request.POST.get('semester')
+        classroom.department = request.POST.get('department')
+        classroom.discription = request.POST.get('discription')
+        classroom.class_image = request.POST.get('image_url')
+
+        # Save the updated data to the database
+        classroom.save()
+
+        # Redirect to the detail view of the updated classroom
+        return render(request, 'class_room/edit_class.html', {'classroom': classroom})
+
+    # If the request method is not POST, render the edit form with the current data
+    return render(request, 'class_room/edit_class.html', {'classroom': classroom})
+
+
 def attendes(request):
     return render(request, 'class_room/attendes.html')
 
 
 def update_attendes(request):
+    my_date_time = timezone.now()
     data: str = []
     print("length is : ", request.POST.get('length'))
     for i in range(int(request.POST.get('length'))):
@@ -211,16 +236,62 @@ def update_attendes(request):
     for i in data:
         splited = i.split('~~')
         print(i.split('~~'), i)
-        if Attendees.objects.filter(class_id=splited[2], user_name=splited[1], subject_states=splited[0]).exists():
+        if Attendees.objects.filter(class_id=splited[2], roll_no=splited[3], Date=my_date_time).exists():
             print("Data Already Exists....")
         else:
             obj = Attendees(
-                class_id=splited[2], user_name=splited[1], subject_states=splited[0]
+                class_id=splited[2], user_name=splited[1], subject_states=splited[0], roll_no=splited[3]
             )
             obj.save()
         for i in Attendees.objects.all():
             print(i.user_name, i.subject_states)
     return render(request, 'class_room/attendes.html')
+
+
+def update_edited_attendes(request):
+    print("running..... update data")
+    data: str = []
+    print("length is : ", request.POST.get('length'))
+    for i in range(int(request.POST.get('length'))):
+        datas = request.POST.get('#cars'+str(i))
+        data.append(datas)
+    for i in data:
+        splited = i.split('~~')
+        print(i.split('~~'), i)
+        obj = Attendees.objects.get(
+            class_id=splited[2], roll_no=splited[3], user_name=splited[1])
+        obj.subject_states = splited[0]
+        obj.save()
+        print(obj.class_id, obj.subject_states)
+        print("updated....")
+        print(
+            f"states : states-{splited[0]}, classid = {splited[2]},roll_no:{splited[3]}")
+    return render(request, 'class_room/attendes.html')
+
+
+def edit_attendes_home(request):
+    return render(request, 'class_room/edit_attendes_home.html')
+
+
+def edit_attendes(request):
+    class_id = request.GET.get('class_id')
+    date = request.GET.get('date')
+    for i in Attendees.objects.all():
+        print(i.class_id, f"[{i.Date}]", i.user_name)
+    attendees = Attendees.objects.filter(class_id=class_id, Date=date)
+    context = {'attendees': [[i, j] for i, j in enumerate(attendees)]}
+    print(context)
+    return render(request, 'class_room/edit_attendes.html', context)
+
+
+def view_attendes(request):
+    class_id = request.GET.get('class_id')
+    date = request.GET.get('date')
+    for i in Attendees.objects.all():
+        print(i.class_id, f"[{i.Date}]", i.user_name, i.subject_states)
+    attendees = Attendees.objects.filter(class_id=class_id, Date=date)
+    context = {'attendees': attendees}
+    return render(request, 'class_room/sample.html', context)
 
 
 def add_class_notes(request, pk):
@@ -229,7 +300,7 @@ def add_class_notes(request, pk):
         if form.is_valid():
             ebook = form.save(commit=False)
             ebook.Class_id = pk
-            ebook.cover_image = get_image_url(ebook.title)
+            ebook.cover_image = get_image_url(str(ebook.title)+" cover image")
             ebook.save()
             return redirect('course_list')
     else:
@@ -258,3 +329,40 @@ def class_ebook_delete(request, pk):
 def class_book_list(request):
     books = EbookForClass.objects.all()
     return render(request, 'class_room/notes/ebook_list.html', {'books': books})
+
+
+def update_mark(request, class_id):
+    peoples = []
+    people = class_enrolled.objects.filter(subject_code=class_id)
+    for i in people:
+        print(i.class_id, i.mail_id)
+        person_obj = User.objects.get(id=i.user_id)
+        try:
+            obj = Student.objects.get(user=person_obj)
+            print(obj.role_no)
+            peoples.append(obj)
+        except:
+            pass
+    return render(request, "class_room/update_mark_home.html", {'people': peoples})
+
+
+def add_mark_data(request):
+    if request.method == 'POST':
+        subject = request.POST.get('subject')
+        student_id = request.POST.get('student_id')
+        Mark = request.POST.get('Mark')
+
+        # Create a new entry for daily_test
+        if not daily_test.objects.filter(subject=subject, student_id=student_id, Date=timezone.now()).exists():
+            obj = daily_test(
+                subject=subject,
+                student_id=student_id,
+                Mark=Mark,
+                Date=timezone.now()
+            )
+            obj.save()
+        # Redirect to the same page to display the new entry
+        return redirect('add_data')
+
+    # Render the HTML template
+    return render(request, 'add_data.html')
