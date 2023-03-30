@@ -1,0 +1,17 @@
+{% block content %}
+<h1>Update Daily Test Data</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="subject">Subject:</label>
+    <input type="text" name="subject" value="{{ data.subject }}"><br><br>
+    <label for="student_id">Student ID:</label>
+    <input type="text" name="student_id" value="{{ data.student_id }}"><br><br>
+    <label for="Mark">Mark:</label>
+    <input type="text" name="Mark" value="{{ data.Mark }}"><br><br>
+    <input type="submit" value="Update">
+</form>
+{% for i in people %}
+{{ i.mail_id }}
+{{ i.user_id }}
+{% endfor %}
+{% endblock %}
