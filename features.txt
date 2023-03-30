@@ -9,15 +9,16 @@ mcq
 Tools                                                                       
 Events = { update }
 chatbot
-dynamic forms
+dynamic forms ---> Not in use
 
 New ideas :-
 
 google search
+youotube video download
+
 wikkipidea
 cources
 auto code generation
-youotube video download
 
 class room :
 
@@ -39,3 +40,29 @@ assignment mark
 notes link
 events
 youotube video download
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
