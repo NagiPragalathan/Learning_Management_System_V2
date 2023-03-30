@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ..models import Faculty_details, Users, Room, ClassRooms, class_enrolled, Attendees, Student, Teacher, EbookForClass
+from ..models import Faculty_details, Users, Room, ClassRooms, class_enrolled, Attendees, Student, Teacher, EbookForClass, daily_test
 from django.contrib.auth.models import User
 from .Tool.Tools import get_user_mail, get_user_name, get_user_role, get_user_obj
 import datetime
@@ -199,6 +199,29 @@ def save_add_class(request):
     return render(request, 'class_room/new_add.html')
 
 
+def edit_classroom(request, classroom_id):
+    # Retrieve the classroom object from the database
+    classroom = get_object_or_404(ClassRooms, subject_code=classroom_id)
+
+    if request.method == 'POST':
+        # Retrieve the updated data from the HTML form
+        classroom.class_name = request.POST.get('class_name')
+        classroom.subject_code = request.POST.get('subject_code')
+        classroom.semester = request.POST.get('semester')
+        classroom.department = request.POST.get('department')
+        classroom.discription = request.POST.get('discription')
+        classroom.class_image = request.POST.get('image_url')
+
+        # Save the updated data to the database
+        classroom.save()
+
+        # Redirect to the detail view of the updated classroom
+        return render(request, 'class_room/edit_class.html', {'classroom': classroom})
+
+    # If the request method is not POST, render the edit form with the current data
+    return render(request, 'class_room/edit_class.html', {'classroom': classroom})
+
+
 def attendes(request):
     return render(request, 'class_room/attendes.html')
 
@@ -309,6 +332,37 @@ def class_book_list(request):
 
 
 def update_mark(request, class_id):
-    obj = class_enrolled.objects.filter(subject_code=class_id)
-    # obj_s =
-    return render(request, "class_room/update_mark_home.html", {'people': obj})
+    peoples = []
+    people = class_enrolled.objects.filter(subject_code=class_id)
+    for i in people:
+        print(i.class_id, i.mail_id)
+        person_obj = User.objects.get(id=i.user_id)
+        try:
+            obj = Student.objects.get(user=person_obj)
+            print(obj.role_no)
+            peoples.append(obj)
+        except:
+            pass
+    return render(request, "class_room/update_mark_home.html", {'people': peoples})
+
+
+def add_mark_data(request):
+    if request.method == 'POST':
+        subject = request.POST.get('subject')
+        student_id = request.POST.get('student_id')
+        Mark = request.POST.get('Mark')
+
+        # Create a new entry for daily_test
+        if not daily_test.objects.filter(subject=subject, student_id=student_id, Date=timezone.now()).exists():
+            obj = daily_test(
+                subject=subject,
+                student_id=student_id,
+                Mark=Mark,
+                Date=timezone.now()
+            )
+            obj.save()
+        # Redirect to the same page to display the new entry
+        return redirect('add_data')
+
+    # Render the HTML template
+    return render(request, 'add_data.html')

@@ -1,6 +1,22 @@
 import requests
 from bs4 import BeautifulSoup
 from googlesearch import search
+import re
+
+
+def convert_youtube_link(url):
+    # Regular expression pattern to match YouTube URLs
+    pattern = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})'
+
+    # Check if the URL matches the pattern
+    match = re.match(pattern, url)
+
+    if match:
+        # If the URL matches, return the embed link
+        return f'https://www.youtube.com/embed/{match.group(1)}'
+    else:
+        # If the URL doesn't match, return None
+        return None
 
 
 def get_image_url(keyword):
