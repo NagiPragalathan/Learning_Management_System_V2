@@ -76,5 +76,5 @@ def get_stackoverflow_link(question, site='stackoverflow.com'):
     return stackoverflow_link
 
 
-print('answer', get_example_code_gfg(
-    "https://www.geeksforgeeks.org/what-is-linked-list/"))
+# print('answer', get_example_code_gfg(
+#     "https://www.geeksforgeeks.org/what-is-linked-list/"))

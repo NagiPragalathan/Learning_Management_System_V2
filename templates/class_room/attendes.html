@@ -96,9 +96,8 @@
                     </div>
                   </td>
                   <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                    <div id="val{{ i.1 }}" style="visibility: hidden;">{{ i.0.user_name }}~~{{ detail.subject_code }}
-                    </div>
-                    <select name="cars" id="cars{{ i.1 }}" name="{{ i.0.user_name }}">
+                    <div id="val{{ i.1 }}">{{ i.0.get_name }}~~{{ detail.subject_code }}~~{{ i.0.role_no }}</div>
+                    <select name="cars" id="cars{{ i.1 }}" name="{{ i.0.get_name }}">
                       <option value="Present">Present</option>
                       <option value="Absent">Absent</option>
                       <option value="OverDuty">OverDuty</option>

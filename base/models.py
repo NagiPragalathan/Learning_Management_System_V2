@@ -258,12 +258,23 @@ class Attendees(models.Model):
     id = models.IntegerField(primary_key=True)
     class_id = models.CharField(max_length=100)
     user_name = models.CharField(max_length=100)
+    roll_no = models.CharField(max_length=100)
     subject_states = models.CharField(max_length=50)
     Date = models.DateField(default=timezone.now)
 
     def __str__(self):
-        return self.title
+        return self.class_id
 
+
+class daily_test(models.Model):
+    id = models.IntegerField(primary_key=True)
+    subject = models.CharField(max_length=100)
+    student_id = models.IntegerField()
+    Mark = models.CharField(max_length=50)
+    Date = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return self.title
 # classRoom ........................
 
 # class ClassRommNotification(models.Model):

@@ -25,7 +25,6 @@ from docx import Document
 from docx.shared import Inches
 from .Tool.Code_scriping_Tool import get_image_url
 
-
 from django.shortcuts import render
 from .Tool.Code_scriping_Tool import get_stackoverflow_link, get_example_code_gfg, get_answer_from_given_link
 
@@ -58,7 +57,6 @@ def Code_scriping(request):
                 context['error'] = 'No Stack Overflow link found for the given question'
         else:
             context['error'] = 'Please enter a question'
-    print("context", context)
     return render(request, 'tools/CodeScriping.html', context)
 
 
