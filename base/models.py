@@ -125,7 +125,7 @@ class Student(models.Model):
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20, null=False)
     joinned_year = models.DateField(default=timezone.now)
-    role_no = models.IntegerField(unique=True)
+    role_no = models.IntegerField()
     department = models.CharField(max_length=40)
 
     @property
