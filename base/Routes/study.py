@@ -130,9 +130,13 @@ def home_classroom(request):
     try:
         enroll_classes = class_enrolled.objects.filter(
             mail_id=get_user_mail(request))
+        print(get_user_mail(request),
+              "this is only passed now............\n\n\n\n\n\n\n\n")
     except:
         enroll_classes = class_enrolled.objects.filter(
             mail_id=request.user.email)
+        print(str(request.user.email), "this is only passed now............\n\n\n\n\n\n\n\n",
+              request.user.email)
 
     for i in enroll_classes:
         classrooms = ClassRooms.objects.filter(subject_code=i.subject_code)
@@ -144,6 +148,26 @@ def home_classroom(request):
             if i.department not in dep:
                 dep.append(i.department)
     if is_student(request.user):
+        classes = []
+        try:
+            enroll_classes = class_enrolled.objects.filter(
+                mail_id=get_user_mail(request))
+            print(get_user_mail(request),
+                  "this is only passed now............\n\n\n\n\n\n\n\n")
+        except:
+            enroll_classes = class_enrolled.objects.filter(
+                mail_id=request.user.username)
+
+        for i in enroll_classes:
+            classrooms = ClassRooms.objects.filter(subject_code=i.subject_code)
+            print(i.class_id)
+            print(classrooms)
+            for i in classrooms:
+                print(i.id, i.class_name)
+                classes.append(i)
+                if i.department not in dep:
+                    dep.append(i.department)
+        print("student is on ...")
         obj = User.objects.get(id=request.user.id)
         student_data = Student.objects.get(user=obj)
         try:
@@ -165,10 +189,11 @@ def home_classroom(request):
         else:
             return render(request, 'teacher/teacher_wait_for_approval.html')
     else:
-        try:
-            return render(request, 'class_room/class_room_home.html', {'classes': classes, 'img': img, 'sem_': sem, 'dep': dep, "user_name": get_user_name(request), "User_role": get_user_role(request), "usr_img": get_user_obj(request)})
-        except:
-            return render(request, 'class_room/class_room_home.html', {'classes': classes, 'img': img, 'sem_': sem, 'dep': dep, "user_name": request.user.username})
+        pass
+        # try:
+        #     return render(request, 'class_room/class_room_home.html', {'classes': classes, 'img': img, 'sem_': sem, 'dep': dep, "user_name": get_user_name(request), "User_role": get_user_role(request), "usr_img": get_user_obj(request)})
+        # except:
+        #     return render(request, 'class_room/class_room_home.html', {'classes': classes, 'img': img, 'sem_': sem, 'dep': dep, "user_name": request.user.username})
 
 
 def add_class(request):
