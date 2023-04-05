@@ -29,6 +29,10 @@ from django.shortcuts import render
 from .Tool.Code_scriping_Tool import get_stackoverflow_link, get_example_code_gfg, get_answer_from_given_link
 
 
+def toolHome(request):
+    return render(request, "tools/ToolHome.html")
+
+
 def Code_scriping(request):
     context = {}
     if request.method == 'POST':

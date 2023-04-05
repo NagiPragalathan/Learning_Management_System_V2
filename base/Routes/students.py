@@ -1,13 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from base import models
 from .Forms import student_forms
-from ..models import Users
+from ..models import Users, Student
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from base import models as QMODEL
 
 # for showing signup/login button for student
+
+
+def student_detail(request, role_no):
+    student = get_object_or_404(Student, role_no=role_no)
+    form = student_forms.StudentForm(instance=student)
+    if request.method == 'POST':
+        form = student_forms.StudentForm(
+            request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/student/{}'.format(student.pk))
+    return render(request, 'student_detail.html', {'student': student, 'form': form})
 
 
 def studentclick_view(request):

@@ -31,6 +31,7 @@ def Make_Join(Componets):
 
 
 tools = [
+    path('toolHome', toolHome),
     path('trans', translate_),
     path('convert_text', convert_text),
     path('wikipedia_summary', wikipedia_summary),

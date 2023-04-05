@@ -376,6 +376,8 @@ def mark(request, class_id):
 def update_mark(request):
     my_date_time = request.POST.get('#date')
     data: str = []
+    print("sample..................................................................................")
+    print("Update mark function.............\n\n\n\n...")
     print("length is : ", request.POST.get('length'))
     for i in range(int(request.POST.get('length'))):
         datas = request.POST.get('#cars'+str(i))
