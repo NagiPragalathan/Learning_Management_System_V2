@@ -11,6 +11,7 @@ from .Routes.study import *
 from .Routes.notes import *
 from .Routes.exam import *
 from .Routes.blog import *
+from .Routes.CommonNotes import *
 from .Routes.admin_page import *
 
 
@@ -236,6 +237,12 @@ note = [
     path('ebook/add/', ebook_add, name='ebook_add'),
     path('ebook/<int:pk>/edit/', ebook_edit, name='ebook_edit'),
     path('ebook/<int:pk>/delete/', ebook_delete, name='ebook_delete'),
+
+    path('note/notes_list', notes_list, name='notes_list'),
+    path('note/<int:note_id>/', note_detail, name='note_detail'),
+    path('note/create/', create_note, name='create_note'),
+    path('note/<int:note_id>/update/', update_note, name='update_note'),
+    path('note/<int:note_id>/delete/', delete_note, name='delete_note'),
 ]
 
 

@@ -300,6 +300,20 @@ class daily_test(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Note(models.Model):
+    id = models.AutoField(primary_key=True)
+    department = models.CharField(max_length=100)
+    semester = models.CharField(max_length=100)
+    notes_title = models.CharField(max_length=100)
+    regulation = models.CharField(max_length=100)
+    subcode = models.CharField(max_length=100)
+    description = models.TextField()
+    file = models.FileField(upload_to='notes/')
+
+    def __str__(self):
+        return self.notes_title
 # classRoom ........................
 
 # class ClassRommNotification(models.Model):
