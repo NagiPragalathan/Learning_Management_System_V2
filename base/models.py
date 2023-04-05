@@ -278,7 +278,7 @@ class Attendees(models.Model):
         return self.class_id
 
 
-class Daily_test_mark(models.Model):
+class DailyTestMark(models.Model):
     id = models.IntegerField(primary_key=True)
     class_id = models.CharField(max_length=100)
     user_name = models.CharField(max_length=100)
@@ -286,6 +286,7 @@ class Daily_test_mark(models.Model):
     subject = models.CharField(max_length=50)
     mark = models.IntegerField()
     Date = models.DateField(default=timezone.now)
+    sample = models.CharField(max_length=100)
 
     def __str__(self):
         return self.class_id

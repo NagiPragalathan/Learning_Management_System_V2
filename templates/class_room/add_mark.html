@@ -149,17 +149,17 @@
         for (i = 0; i < datas.length; i++) {
             ids.push($('#val' + i).text());
         }
-        console.log(ids)
+        // console.log(ids)
         var data = new FormData();
 
         data.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
         for (let i = 0; i < datas.length; i++) {
-            data.append(datas[i], $(datas[i]).val() + "~~" + ids[i])
+            data.append(datas[i], "datas" + $(datas[i]).val() + "~~" + ids[i])
         }
-        data.append("length", {{ peoplelength }})
-    data.append('#course')
-    data.append('#date')
-    console.log(data)
+        data.append("length", {{ people| length }})
+    // data.append('#course')
+    // data.append('#date')
+    // console.log("datas : ", data)
     $.ajax({
         method: "POST",
         url: url,
@@ -176,7 +176,7 @@
             }
         }
     })
-              }
+    }
 </script>
 
 {% endblock content%}
