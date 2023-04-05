@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ..models import Faculty_details, Users, Room, ClassRooms, class_enrolled, Attendees, Student, Teacher, EbookForClass, daily_test
+from ..models import Faculty_details, Users, Daily_test_mark, Room, ClassRooms, class_enrolled, NoteCourse, Attendees, Student, Teacher, EbookForClass, daily_test
 from django.contrib.auth.models import User
 from .Tool.Tools import get_user_mail, get_user_name, get_user_role, get_user_obj
 import datetime
@@ -356,7 +356,7 @@ def class_book_list(request):
     return render(request, 'class_room/notes/ebook_list.html', {'books': books})
 
 
-def update_mark(request, class_id):
+def mark(request, class_id):
     peoples = []
     people = class_enrolled.objects.filter(subject_code=class_id)
     for i in people:
@@ -368,7 +368,31 @@ def update_mark(request, class_id):
             peoples.append(obj)
         except:
             pass
-    return render(request, "class_room/update_mark_home.html", {'people': peoples})
+    detials = ClassRooms.objects.get(subject_code=class_id)
+    courses = NoteCourse.objects.all()
+    return render(request, "class_room/add_mark.html", {'courses': courses, 'people': [[j, i] for i, j in enumerate(peoples)], "ids": [str(i.id) for i in peoples], "detail": detials, "date": datetime.datetime.now().date()})
+
+
+def update_mark(request):
+    my_date_time = request.POST.get('#date')
+    data: str = []
+    print("length is : ", request.POST.get('length'))
+    for i in range(int(request.POST.get('length'))):
+        datas = request.POST.get('#cars'+str(i))
+        data.append(datas)
+    for i in data:
+        splited = i.split('~~')
+        print(i.split('~~'), i)
+        if Daily_test_mark.objects.filter(class_id=splited[2], roll_no=splited[3], Date=my_date_time).exists():
+            print("Data Already Exists....")
+        else:
+            obj = Daily_test_mark(
+                class_id=splited[2], user_name=splited[1], mark=splited[0], roll_no=splited[3], Date=my_date_time, subject=request.POST.get(
+                    '#course')
+            )
+            # obj.save()
+
+    return render(request, 'class_room/attendes.html')
 
 
 def add_mark_data(request):

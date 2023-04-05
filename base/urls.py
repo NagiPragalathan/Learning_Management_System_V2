@@ -102,13 +102,15 @@ classroom = [
     path("view_attendes", view_attendes),
     path("edit_attendes", edit_attendes),
     path("add_mark_data", add_mark_data),
-    path("update_mark/<str:class_id>", update_mark),
+    path("mark/<str:class_id>", mark),
+    path("update_marks", update_mark),
     path("add_class_notes/<str:pk>", add_class_notes),
     path('class_ebook/book_list', class_book_list, name='class_book_list'),
     path('class_ebook/<int:pk>/edit/', class_ebook_edit, name='class_ebook_edit'),
     path('class_ebook/<int:pk>/delete/',
          class_ebook_delete, name='class_ebook_delete'),
 ]
+
 
 studet = [
     path('student/studentclick', studentclick_view),

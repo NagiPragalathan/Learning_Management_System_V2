@@ -125,7 +125,7 @@ class Student(models.Model):
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20, null=False)
     joinned_year = models.DateField(default=timezone.now)
-    role_no = models.IntegerField(unique=True)
+    role_no = models.IntegerField()
     department = models.CharField(max_length=40)
 
     @property
@@ -272,6 +272,19 @@ class Attendees(models.Model):
     user_name = models.CharField(max_length=100)
     roll_no = models.CharField(max_length=100)
     subject_states = models.CharField(max_length=50)
+    Date = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return self.class_id
+
+
+class Daily_test_mark(models.Model):
+    id = models.IntegerField(primary_key=True)
+    class_id = models.CharField(max_length=100)
+    user_name = models.CharField(max_length=100)
+    roll_no = models.CharField(max_length=100)
+    subject = models.CharField(max_length=50)
+    mark = models.IntegerField()
     Date = models.DateField(default=timezone.now)
 
     def __str__(self):
